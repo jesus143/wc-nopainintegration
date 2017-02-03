@@ -61,7 +61,7 @@ class wc_product_payments
 			$gateways = $payment_gateways->get_available_payment_gateways();
 
 			foreach( $gateways as $gateway ) {
-				if( 'allpay_aio_credit' == $gateway->id ) {
+				if( 'allpay_aio_credit' == $gateway->id || 'spgateway_credit_card' == $gateway->id) {
 					add_meta_box(
 						'credit', 
 						'信用卡分期方式', 
@@ -71,7 +71,7 @@ class wc_product_payments
 						'high'
 					);
 				}
-			}
+			} 
 		}
 
 		add_meta_box(
