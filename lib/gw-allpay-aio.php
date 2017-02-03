@@ -196,7 +196,7 @@ class GW_Allpay_Aio extends WC_Payment_Gateway
 	}
 
 	// 接收回傳參數驗證
-	public function zthankyou_page( $order_id )
+	public function thankyou_page( $order_id ) 
 	{  
 	    global $woocommerce;
 
