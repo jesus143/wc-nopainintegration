@@ -1,0 +1,52 @@
+@charset "UTF-8";
+/* CSS Document */
+
+@media only screen and (max-width: 1600px) and (min-width: 1440px) { 
+    .b_setupBox .setup{ position:absolute; top: -13em !important; left:18% !important;}
+	
+}
+@media only screen and (max-width: 1440px) and (min-width: 1366px) { 
+    .b_setupBox .setup{ position:absolute; top: -12em !important; left:17% !important;}
+}
+@media only screen and (max-width: 1280px) and (min-width: 768px) { 
+    
+}
+
+/* Between Medium and Small size 1280x 1024 */
+@media only screen and (max-width: 1280px) and (min-width: 1025px)  and (min-height: 1020px)  and (max-height: 1080px) { 
+    
+}
+  
+/* Between Medium and Small size 1280x 800 */
+@media only screen and (max-width: 1280px) and (min-width: 1025px) and (min-height: 300px)  and (max-height: 900px)  { 
+    
+}
+
+/* 11吋1366x768 --------------------------------------------------------------------------- */
+@media only screen and (max-width: 1366px) and (min-width: 1023px) { 
+	.b_setupBox .setup{ position:absolute; top: -11em !important; left:14% !important;}
+}
+
+/* iPad 橫版1024x768 --------------------------------------------------------------------------- */
+@media only screen and (max-width: 1024px) and (min-width: 981px) { 
+    .container { padding:0 !important; width:90%; min-width:955px; !important;}
+	.b_setupBox .setup{ position:absolute; top: -10em !important; left:10% !important;}
+	.go_top { display:none !important;}
+	.partner{ width:95% !important;}
+}
+
+/* iPad 直的size800x600--------------------------------------------------------------------------- */
+@media only screen and (max-width: 980px) and (min-width: 660px) { 
+	.container { padding:0 !important;width:90%; min-width:955px; !important;}
+	.b_setupBox .setup{ position:absolute; top: -9.5em !important; left:5% !important;}
+	.go_top { display:none !important;}
+	.partner{ width:95% !important;}
+	.footer_link ul{ width:55% !important;}
+	
+}
+
+/* 小於767px and mobile --------------------------------------------------------------------------- */
+@media only screen and (max-width: 767px) { 
+
+
+}

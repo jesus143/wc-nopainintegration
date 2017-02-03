@@ -1,0 +1,1 @@
+http://www.nsp-code.com/woocommerce-software-license-documentation/
