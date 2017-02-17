@@ -26,7 +26,7 @@ class wc_product_payments
 		 	add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 			add_action( 'save_post', array( $this, 'save_meta_box' ), 10, 2 );
 		}
-    	add_filter( 'woocommerce_available_payment_gateways', array( $this, 'payment_gateway_disable' ) );
+		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'payment_gateway_disable' ) );			
 		add_action( 'woocommerce_thankyou', array( $this, 'thankyou_page' ) );
 		add_filter( 'woocommerce_allpay_aio_credit_fixed_args', array( $this, 'allpay_credit_fixed_args' ) );		
 		add_action( 'woocommerce_checkout_before_order_review', array( $this, 'checkout_before_order_review' ) );
@@ -37,15 +37,13 @@ class wc_product_payments
 		add_filter('woocommerce_create_account_default_checked' , function ($checked){   
 		    return true;
 		});
-	//	if ( is_plugin_active( 'wishlist-member/wpm.php' ) ) {
-	//	 	add_action( 'woocommerce_checkout_order_processed', array( $this, 'wishlist_add_member' ) );
-	//	}
+		// if ( is_plugin_active( 'wishlist-member/wpm.php' ) ) {
+		//  	add_action( 'woocommerce_checkout_order_processed', array( $this, 'wishlist_add_member' ) );
+		// }
 	}
 
 	public function add_meta_boxes()
 	{
-		global $post;
-
 		add_meta_box(
 			'payments', 
 			'付款方式', 
@@ -54,25 +52,6 @@ class wc_product_payments
 			'side', 
 			'high'
 		);
-
-		if( $post->post_type == 'product' ) {
-
-			$payment_gateways = new WC_Payment_Gateways();
-			$gateways = $payment_gateways->get_available_payment_gateways();
-
-			foreach( $gateways as $gateway ) {
-				if( 'allpay_aio_credit' == $gateway->id || 'spgateway_credit_card' == $gateway->id) {
-					add_meta_box(
-						'credit', 
-						'信用卡分期方式', 
-						array( $this, 'credit_installments' ), 
-						'product', 
-						'side', 
-						'high'
-					);
-				}
-			}
-		}
 
 		add_meta_box(
 			'credit-fixed-options',
@@ -256,26 +235,6 @@ class wc_product_payments
         }
 	}
 
-	public function credit_installments() {
-
-		global $post;
-		$post_id = $post->ID;
-
-		$selected_installments = get_post_meta( $post_id, 'credit_installments', TRUE );
-		$credit_installments = GW_Allpay_Aio::allpay_credit_installment_args();
-		
-		foreach( $credit_installments as $key => $label ) {
-			$checked = '';
-			if( is_array( $selected_installments ) && in_array( $key, $selected_installments ) ) {
-				$checked = ' checked=checked';
-			}
-			?>
-           <input type="checkbox" <?php echo $checked; ?> value="<?php echo $key; ?>" name="credit_installments[]" id="credit_installments_<?php echo $key; ?>" />
-            <label for="credit_installments_<?php echo $key; ?>"><?php echo $label; ?></label>  
-            <br />  
-		<?php }
-	}
-
 	public function save_meta_box($post_id, $post)
 	{
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -304,17 +263,6 @@ class wc_product_payments
             update_post_meta($post_id, 'payments', array());
         }
 
-		if (isset($_POST['post_type']) && $_POST['post_type'] == 'product' && isset($_POST['credit_installments']) ) {
-			$credit_installments = $_POST['credit_installments'];
-			$installments = array();
-			foreach( $credit_installments as $installment ) {
-				$installments[] = $installment;
-			}
-            update_post_meta($post_id, 'credit_installments', $installments);
-        } elseif (isset($_POST['post_type']) && $_POST['post_type'] == 'product' ) {
-            update_post_meta($post_id, 'credit_installments', '');
-        }  
-		
         if (isset($_POST['post_type']) && $_POST['post_type'] == 'product' && isset($_POST['thankyou_page']) ) {
             update_post_meta($post_id, 'thankyou_page', $_POST['thankyou_page']);
         } elseif (isset($_POST['post_type']) && $_POST['post_type'] == 'product' ) {
@@ -353,14 +301,12 @@ class wc_product_payments
         // error_reporting(-1);
         global $woocommerce;
         $arrayKeys = array_keys($available_gateways);
-
         if (count($woocommerce->cart)) {
             $items = $woocommerce->cart->cart_contents;
             $itemsPays = '';
             if (is_array($items)) {
                 foreach ($items as $item) {
                     $itemsPays = get_post_meta($item['product_id'], 'payments', true);
-
                     if (is_array($itemsPays) && count($itemsPays)) {
                         foreach ($arrayKeys as $key) {
                             if (array_key_exists($key, $available_gateways) && !in_array($available_gateways[$key]->id, $itemsPays)) {
@@ -390,15 +336,7 @@ class wc_product_payments
                 }            
             } 
         }
-
-//		print "<pre>";
-//
-//			print_r($available_gateways);
-//
-//		print "</pre>";
-
-
-        return $available_gateways  ;
+        return $available_gateways;		
 	}
 
 	public function thankyou_page($order_id)
@@ -549,14 +487,11 @@ class wc_product_payments
 
 		$wishlist_level = get_post_meta( $product_id, 'wishlist_level', true );
 
-		if( $wishlist_level ) {
-			$args = array(
-				'Users' => array($order->user_id)
-			);
+		$args = array(
+		    'Users' => array($order->user_id)
+		);
 
-			$members = wlmapi_add_member_to_level($wishlist_level, $args);
-		}
-
+		$members = wlmapi_add_member_to_level($wishlist_level, $args);
 	}
 }
 
